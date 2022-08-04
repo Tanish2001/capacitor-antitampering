@@ -13,25 +13,34 @@ npx cap sync
 
 <docgen-index>
 
-* [`echo(...)`](#echo)
+* [`verify()`](#verify)
+* [Interfaces](#interfaces)
 
 </docgen-index>
 
 <docgen-api>
 <!--Update the source file JSDoc comments and rerun docgen to update the docs below-->
 
-### echo(...)
+### verify()
 
 ```typescript
-echo(options: { value: string; }) => Promise<{ value: string; }>
+verify() => Promise<AntiTamperingResult>
 ```
 
-| Param         | Type                            |
-| ------------- | ------------------------------- |
-| **`options`** | <code>{ value: string; }</code> |
-
-**Returns:** <code>Promise&lt;{ value: string; }&gt;</code>
+**Returns:** <code>Promise&lt;<a href="#antitamperingresult">AntiTamperingResult</a>&gt;</code>
 
 --------------------
+
+
+### Interfaces
+
+
+#### AntiTamperingResult
+
+| Prop              | Type                |
+| ----------------- | ------------------- |
+| **`status`**      | <code>string</code> |
+| **`assetsCount`** | <code>number</code> |
+| **`messages`**    | <code>string</code> |
 
 </docgen-api>

@@ -1,5 +1,6 @@
 package io.github.asephermann.plugins.antitampering
 
+import android.app.Activity
 import com.getcapacitor.JSObject
 import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
@@ -12,24 +13,12 @@ import java.util.concurrent.Executors
 
 @CapacitorPlugin(name = "AntiTampering")
 class AntiTamperingPlugin : Plugin() {
-    init {
-        checkAndStopExecution()
-    }
-
-    private fun checkAndStopExecution() {
-        try {
-            AssetsIntegrity.check(activity.assets)
-            DebugDetection.check(activity.packageName)
-        } catch (e: Exception) {
-            activity.runOnUiThread {
-                e.printStackTrace()
-                throw TamperingException("Anti-Tampering check failed")
-            }
-        }
-    }
 
     @PluginMethod
     fun verify(call: PluginCall) {
+
+        checkAndStopExecution(activity)
+
         var status: String
         var assetsCount: Int
         var messages: String
@@ -40,8 +29,8 @@ class AntiTamperingPlugin : Plugin() {
 
         executor.submit {
             try {
-                check(activity.packageName)
-                assetsCount = check(activity.assets)
+                check(activity, activity.packageName)
+                assetsCount = check(activity, activity.assets)
                 status = "OK"
                 messages = "OK"
             } catch (e: Exception) {
@@ -54,6 +43,18 @@ class AntiTamperingPlugin : Plugin() {
             ret.put("messages", messages)
             ret.put("assetsCount", assetsCount)
             call.resolve(ret)
+        }
+    }
+
+    private fun checkAndStopExecution(mActivity: Activity) {
+        try {
+            check(mActivity, mActivity.assets)
+            check(mActivity, mActivity.packageName)
+        } catch (e: Exception) {
+            mActivity.runOnUiThread {
+                e.printStackTrace()
+                throw TamperingException("Anti-Tampering check failed")
+            }
         }
     }
 }

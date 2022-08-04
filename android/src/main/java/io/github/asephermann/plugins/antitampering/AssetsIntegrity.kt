@@ -1,5 +1,7 @@
 package io.github.asephermann.plugins.antitampering
 
+import android.app.Activity
+import android.app.AlertDialog
 import android.content.res.AssetManager
 import android.util.Base64
 import java.io.ByteArrayOutputStream
@@ -19,7 +21,8 @@ internal object AssetsIntegrity {
     )
 
     @Throws(Exception::class)
-    fun check(assets: AssetManager): Int {
+    fun check(activity: Activity, assets: AssetManager): Int {
+        var msg = ""
         for ((key, value) in assetsHashes.entries) {
             val fileNameDecode: ByteArray = Base64.decode(key, 0)
             val fileName = String(fileNameDecode, StandardCharsets.UTF_8)
@@ -28,7 +31,17 @@ internal object AssetsIntegrity {
             val file = assets.open(filePath)
             val hash = getFileHash(file)
             if (value == null || value != hash) {
-                throw Exception("Content of $fileName has been tampered")
+
+                msg = "\"Content of $fileName has been tampered\""
+
+                val alertDialog: AlertDialog = AlertDialog.Builder(activity).create()
+                alertDialog.setTitle("Assets Integrity")
+                alertDialog.setMessage(msg)
+                alertDialog.setButton(
+                    AlertDialog.BUTTON_POSITIVE, "OK"
+                ) { dialog, _ -> dialog.dismiss() }
+                alertDialog.show()
+                throw Exception(msg)
             }
         }
         return assetsHashes.size

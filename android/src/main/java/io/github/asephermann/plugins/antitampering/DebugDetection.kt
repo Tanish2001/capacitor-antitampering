@@ -8,7 +8,11 @@ import java.lang.reflect.Field
 
 internal object DebugDetection {
     @Throws(Exception::class)
-    fun check(activity: Activity, packageName: String) : String {
+    fun check(
+        activity: Activity,
+        packageName: String,
+        throwExceptionEnabled: Boolean = false
+    ): String {
 
         var msg = ""
         try {
@@ -18,19 +22,18 @@ internal object DebugDetection {
                 msg = "App running in Debug mode"
             }
 
-            if (msg != "") {
-                val alertDialog: AlertDialog = AlertDialog.Builder(activity).create()
-                alertDialog.setTitle("Debug Detection")
-                alertDialog.setMessage(msg)
-                alertDialog.setButton(
-                    AlertDialog.BUTTON_POSITIVE, "OK"
-                ) { dialog, _ ->
-                    dialog.dismiss()
-                    activity.finish()
-                    throw Exception(msg)
-                }
-                alertDialog.show()
+            val alertDialog: AlertDialog = AlertDialog.Builder(activity).create()
+            alertDialog.setTitle("Debug Detection")
+            alertDialog.setMessage(msg)
+            alertDialog.setButton(
+                AlertDialog.BUTTON_POSITIVE, "OK"
+            ) { dialog, _ ->
+                dialog.dismiss()
+                if (msg != "") activity.finish()
+                if (throwExceptionEnabled) throw Exception(msg)
             }
+
+            if (msg != "") alertDialog.show()
 
         } catch (e: Exception) {
             e.printStackTrace()

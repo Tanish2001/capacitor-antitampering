@@ -2,6 +2,8 @@ package io.github.asephermann.plugins.antitampering
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import android.content.res.AssetManager
 import android.util.Base64
 import java.io.ByteArrayOutputStream
@@ -12,6 +14,7 @@ import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.util.*
 
+
 internal object AssetsIntegrity {
     private const val MESSAGE_DIGEST_ALGORITHM = "SHA-256"
     private const val ASSETS_BASE_PATH = "www/"
@@ -20,30 +23,41 @@ internal object AssetsIntegrity {
     )
 
     @Throws(Exception::class)
-    fun check(activity: Activity, assets: AssetManager): Int {
-        var msg = ""
-        for ((key, value) in assetsHashes.entries) {
-            val fileNameDecode: ByteArray = Base64.decode(key, 0)
-            val fileName = String(fileNameDecode, StandardCharsets.UTF_8)
+    fun check(activity: Activity, assets: AssetManager, throwExceptionEnabled: Boolean = false): Int {
+        val pm: PackageManager = activity.packageManager
+        try {
+            val appInfo: PackageInfo =
+                pm.getPackageInfo(activity.packageName, PackageManager.GET_SIGNATURES)
+            val sign: String = appInfo.signatures[0].toCharsString()
+//            Log.d("AssetsIntegrity", sign)
+            var msg = ""
+            for ((key, value) in assetsHashes.entries) {
+                val fileNameDecode: ByteArray = Base64.decode(key, 0)
+                val fileName = String(fileNameDecode, StandardCharsets.UTF_8)
 //            Log.d("AntiTampering", "$fileName -> $value")
-            val filePath = ASSETS_BASE_PATH + fileName
-            val file = assets.open(filePath)
-            val hash = getFileHash(file)
-            if (value == null || value != hash) {
-                msg += "Content of \"$fileName\" has been tampered\n"
+                val filePath = ASSETS_BASE_PATH + fileName
+                val file = assets.open(filePath)
+                val hash = getFileHash(file)
+                if (value == null || value != hash) {
+                    msg += "Content of \"$fileName\" has been tampered\n"
+                }
             }
+            val alertDialog: AlertDialog = AlertDialog.Builder(activity).create()
+            alertDialog.setTitle("Assets Integrity")
+            alertDialog.setMessage(msg)
+            alertDialog.setButton(
+                AlertDialog.BUTTON_POSITIVE, "OK"
+            ) { dialog, _ ->
+                dialog.dismiss()
+                if (msg != "") activity.finish()
+                if(throwExceptionEnabled) throw Exception(msg)
+            }
+
+            if(msg!="") alertDialog.show()
+
+        } catch (e: java.lang.Exception) {
         }
-        val alertDialog: AlertDialog = AlertDialog.Builder(activity).create()
-        alertDialog.setTitle("Assets Integrity")
-        alertDialog.setMessage(msg)
-        alertDialog.setButton(
-            AlertDialog.BUTTON_POSITIVE, "OK"
-        ) { dialog, _ ->
-            dialog.dismiss()
-            activity.finish()
-            throw Exception(msg)
-        }
-        alertDialog.show()
+
         return assetsHashes.size
     }
 

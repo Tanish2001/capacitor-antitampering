@@ -12,7 +12,6 @@ import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.util.*
 
-
 internal object AssetsIntegrity {
     private const val MESSAGE_DIGEST_ALGORITHM = "SHA-256"
     private const val ASSETS_BASE_PATH = "www/"
@@ -22,11 +21,11 @@ internal object AssetsIntegrity {
 
     @Throws(Exception::class)
     fun check(activity: Activity, assets: AssetManager): Int {
-        var msg = ""
+        var msg: String
         for ((key, value) in assetsHashes.entries) {
             val fileNameDecode: ByteArray = Base64.decode(key, 0)
             val fileName = String(fileNameDecode, StandardCharsets.UTF_8)
-            // Log.d("AntiTampering", fileName + " -> " + entry.getValue());
+//            Log.d("AntiTampering", "$fileName -> $value")
             val filePath = ASSETS_BASE_PATH + fileName
             val file = assets.open(filePath)
             val hash = getFileHash(file)
@@ -39,9 +38,12 @@ internal object AssetsIntegrity {
                 alertDialog.setMessage(msg)
                 alertDialog.setButton(
                     AlertDialog.BUTTON_POSITIVE, "OK"
-                ) { dialog, _ -> dialog.dismiss() }
+                ) { dialog, _ ->
+                    dialog.dismiss()
+                    activity.finish()
+                    throw Exception(msg)
+                }
                 alertDialog.show()
-                throw Exception(msg)
             }
         }
         return assetsHashes.size
@@ -65,7 +67,7 @@ internal object AssetsIntegrity {
             }
             hexString.append(Integer.toHexString(0xFF and hashBytes[i].toInt()))
         }
-        // Log.d("AntiTampering", String(hexString));
+//        Log.d("AntiTampering", String(hexString))
         return String(hexString)
     }
 }

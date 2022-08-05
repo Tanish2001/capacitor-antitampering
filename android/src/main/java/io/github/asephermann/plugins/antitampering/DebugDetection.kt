@@ -8,9 +8,10 @@ import java.lang.reflect.Field
 
 internal object DebugDetection {
     @Throws(Exception::class)
-    fun check(activity: Activity, packageName: String) {
+    fun check(activity: Activity, packageName: String) : String {
+
+        var msg = ""
         try {
-            var msg = ""
             if (hasDebuggerAttached()) {
                 msg = "Debugger attached"
             } else if (getDebugField(packageName)) {
@@ -26,6 +27,7 @@ internal object DebugDetection {
                 ) { dialog, _ ->
                     dialog.dismiss()
                     activity.finish()
+                    throw Exception(msg)
                 }
                 alertDialog.show()
             }
@@ -33,7 +35,8 @@ internal object DebugDetection {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-//        throw Exception(msg)
+
+        return msg
     }
 
     @Throws(

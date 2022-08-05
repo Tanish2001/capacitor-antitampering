@@ -21,7 +21,7 @@ internal object AssetsIntegrity {
 
     @Throws(Exception::class)
     fun check(activity: Activity, assets: AssetManager): Int {
-        var msg: String
+        var msg = ""
         for ((key, value) in assetsHashes.entries) {
             val fileNameDecode: ByteArray = Base64.decode(key, 0)
             val fileName = String(fileNameDecode, StandardCharsets.UTF_8)
@@ -30,22 +30,20 @@ internal object AssetsIntegrity {
             val file = assets.open(filePath)
             val hash = getFileHash(file)
             if (value == null || value != hash) {
-
-                msg = "\"Content of $fileName has been tampered\""
-
-                val alertDialog: AlertDialog = AlertDialog.Builder(activity).create()
-                alertDialog.setTitle("Assets Integrity")
-                alertDialog.setMessage(msg)
-                alertDialog.setButton(
-                    AlertDialog.BUTTON_POSITIVE, "OK"
-                ) { dialog, _ ->
-                    dialog.dismiss()
-                    activity.finish()
-                    throw Exception(msg)
-                }
-                alertDialog.show()
+                msg += "Content of \"$fileName\" has been tampered\n"
             }
         }
+        val alertDialog: AlertDialog = AlertDialog.Builder(activity).create()
+        alertDialog.setTitle("Assets Integrity")
+        alertDialog.setMessage(msg)
+        alertDialog.setButton(
+            AlertDialog.BUTTON_POSITIVE, "OK"
+        ) { dialog, _ ->
+            dialog.dismiss()
+            activity.finish()
+            throw Exception(msg)
+        }
+        alertDialog.show()
         return assetsHashes.size
     }
 

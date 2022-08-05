@@ -29,10 +29,9 @@ class AntiTamperingPlugin : Plugin() {
 
         executor.submit {
             try {
-                check(activity, activity.packageName)
                 assetsCount = check(activity, activity.assets)
-                status = "OK"
-                messages = "OK"
+                status = "CHECKED"
+                messages = check(activity, activity.packageName)
             } catch (e: Exception) {
                 assetsCount = 0
                 status = "ERROR"

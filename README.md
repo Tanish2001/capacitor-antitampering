@@ -45,7 +45,6 @@ verify() => Promise<AntiTamperingResult>
 
 ## Example
 
-### Show Start manager
 
 ```typescript
 import { AntiTampering } from 'capacitor-antitampering';
@@ -61,4 +60,5 @@ antiTamperingCheck = async () => {
   }
 
 ```
+![apprunninginDebugMode](https://github.com/asephermann/pictures/blob/main/apprunninginDebugMode.jpg)
 </docgen-api>

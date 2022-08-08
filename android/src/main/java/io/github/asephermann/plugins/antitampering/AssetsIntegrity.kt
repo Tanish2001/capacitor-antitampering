@@ -26,11 +26,12 @@ internal object AssetsIntegrity {
     fun check(activity: Activity, assets: AssetManager, throwExceptionEnabled: Boolean = false): Int {
         val pm: PackageManager = activity.packageManager
         try {
+            var msg = ""
             val appInfo: PackageInfo =
                 pm.getPackageInfo(activity.packageName, PackageManager.GET_SIGNATURES)
             val sign: String = appInfo.signatures[0].toCharsString()
+            if (sign == "") msg += "App not signed\n"
 //            Log.d("AssetsIntegrity", sign)
-            var msg = ""
             for ((key, value) in assetsHashes.entries) {
                 val fileNameDecode: ByteArray = Base64.decode(key, 0)
                 val fileName = String(fileNameDecode, StandardCharsets.UTF_8)

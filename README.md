@@ -43,22 +43,4 @@ verify() => Promise<AntiTamperingResult>
 | **`assetsCount`** | <code>number</code> |
 | **`messages`**    | <code>string</code> |
 
-## Example
-
-
-```typescript
-import { AntiTampering } from 'capacitor-antitampering';
-
-
-antiTamperingCheck = async () => {
-    const result = await AntiTampering.verify();
-  
-    console.log('Result: ');
-    console.log('Status: '+result.status);
-    console.log('Assets Count: '+result.assetsCount);
-    console.log('Messages: '+result.messages);
-  }
-
-```
-![apprunninginDebugMode](https://github.com/asephermann/pictures/blob/main/apprunninginDebugMode.jpg)
 </docgen-api>

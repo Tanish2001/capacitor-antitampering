@@ -21,6 +21,9 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
+    kotlinOptions {
+        jvmTarget = '17'
+    }
     namespace "io.github.asephermann.plugins.antitampering"
     compileSdkVersion project.hasProperty('compileSdkVersion') ? rootProject.ext.compileSdkVersion : 33
     defaultConfig {

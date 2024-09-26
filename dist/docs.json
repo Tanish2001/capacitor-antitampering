@@ -1,0 +1,58 @@
+{
+  "api": {
+    "name": "AntiTamperingPlugin",
+    "slug": "antitamperingplugin",
+    "docs": "",
+    "tags": [],
+    "methods": [
+      {
+        "name": "verify",
+        "signature": "() => Promise<AntiTamperingResult>",
+        "parameters": [],
+        "returns": "Promise<AntiTamperingResult>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [
+          "AntiTamperingResult"
+        ],
+        "slug": "verify"
+      }
+    ],
+    "properties": []
+  },
+  "interfaces": [
+    {
+      "name": "AntiTamperingResult",
+      "slug": "antitamperingresult",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "status",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
+        },
+        {
+          "name": "assetsCount",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "number"
+        },
+        {
+          "name": "messages",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
+        }
+      ]
+    }
+  ],
+  "enums": [],
+  "typeAliases": [],
+  "pluginConfigs": []
+}

@@ -1,0 +1,1 @@
+{"version":3,"file":"definitions.js","sourceRoot":"","sources":["../../src/definitions.ts"],"names":[],"mappings":"","sourcesContent":["export interface AntiTamperingPlugin {\n  verify(): Promise<AntiTamperingResult>;\n}\n\nexport interface AntiTamperingResult{\n  status?: string,\n  assetsCount: number,\n  messages?: string\n}"]}

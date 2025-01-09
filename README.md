@@ -1,7 +1,7 @@
 # capacitor-antitampering
-
+###**Upgraded to Support Capacitor 6.**
 Capacitor plugin to verifies the integrity of the static assets of your application, cheking if the files have changed since the original build.
-
+Upgraded and added logic to verify assets integrity which exist in www directory in ionic capactior. 
 ## Install
 
 ```bash

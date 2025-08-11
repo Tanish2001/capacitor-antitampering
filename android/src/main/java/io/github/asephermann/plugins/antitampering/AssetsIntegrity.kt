@@ -49,7 +49,7 @@ internal object AssetsIntegrity {
             val pm: PackageManager = activity.packageManager
             val appInfo: PackageInfo =
                     pm.getPackageInfo(activity.packageName, PackageManager.GET_SIGNATURES)
-            val sign: String = appInfo.signatures[0].toCharsString()
+            val sign: String = appInfo.signatures!![0].toCharsString()
             if (sign == "") msg += "App not signed\n"
 
             for (fileInfo in filesFromAssets) {
@@ -222,5 +222,6 @@ internal object AssetsIntegrity {
 
         return fileList
     }
+
 
 }
